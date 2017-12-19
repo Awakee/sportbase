@@ -222,11 +222,28 @@ def export_media(tourney_list,date_start,date_end):
     response['Content-Length'] = length
     return response
 
+def day_name(number):
+    dayname = "qwe"
+    if number == 0:
+       dayname = u'Понедельник'
+    if number == 1:
+       dayname = u'Вторник'
+    if number == 2:
+       dayname = u'Среда'
+    if number == 3:
+       dayname = u'Четверг'
+    if number == 4:
+       dayname = u'Пятница'
+    if number == 5:
+       dayname = u'Суббота'
+    if number == 6:
+       dayname = u'Воскресение'
+    return dayname
+
 def export_plan(tourney_list,date_start,date_end):
     file_name = "sportapp/reports/x1.docx"
     doc1 = Document(file_name)
     str_date_n = unicode(localize(date_start)).split(" ")
-
     for tourney in tourney_list: 
         str_date_start = unicode(localize(tourney.date_start)).split(" ")
         str_date_end = unicode(localize(tourney.date_end)).split(" ")
@@ -235,7 +252,14 @@ def export_plan(tourney_list,date_start,date_end):
         row3 = doc1.tables[1].add_row()
         str_date_start_tour = calendar.weekday(tourney.date_start.year,tourney.date_start.month,tourney.date_start.day)
         str_date_end_tour = calendar.weekday(tourney.date_end.year,tourney.date_end.month,tourney.date_end.day)
-        row1.cells[0].paragraphs[0].text = (str(str_date_start_tour) + " " + str(str_date_end_tour))
+        if str_date_start_tour == str_date_end_tour:
+	   run31 = row1.cells[0].paragraphs[0].add_run(day_name(str_date_start_tour))
+           run31.bold = True
+	   run31.italic = True
+        else:
+           run31 = row1.cells[0].paragraphs[0].add_run(day_name(str_date_start_tour) + " - " + day_name(str_date_end_tour))
+           run31.bold = True
+           run31.italic = True
         run11 = row2.cells[0].paragraphs[0].add_run(str_date_start[0] + " " + str_date_start[1] + " - \n" + str_date_end[0] + " " + str_date_end[1])     
         run11.bold = True
         run11.italic = True
